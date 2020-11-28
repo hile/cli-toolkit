@@ -1,0 +1,15 @@
+#
+# Developer requirements for cli-toolkit
+#
+-r test.txt
+ipython==7.13.0
+ipython-genutils==0.2.0
+recommonmark==0.6.0
+sphinx-autobuild==0.7.1
+sphinx-rtd-theme==0.4.3
+sphinxcontrib-applehelp==1.0.2
+sphinxcontrib-devhelp==1.0.2
+sphinxcontrib-htmlhelp==1.0.3
+sphinxcontrib-jsmath==1.0.1
+sphinxcontrib-qthelp==1.0.3
+sphinxcontrib-serializinghtml==1.1.4
