@@ -3,11 +3,40 @@ Encoders for data
 """
 
 import json
+
+from datetime import datetime, date, time, timedelta, timezone
+
 import yaml
 
-from datetime import datetime, date, time, timedelta
 
-import pytz
+def format_timedelta(value, with_prefix=True):
+    """
+    Format python datetime timedelta value as ISO format time string
+    (HH:MM:SS.MS) with +- prefix.
+
+    Value can either be datetime.timedelta instance or float string representing total seconds in
+    timedelta
+
+    If value is negative and with_prefix is False, raise ValueError because such timestamp can't be
+    presented correctly without prefix
+    """
+    if isinstance(value, timedelta):
+        value = value.total_seconds()
+    if not isinstance(value, float):
+        try:
+            value = float(value)
+        except (TypeError, ValueError) as error:
+            raise ValueError('format_timedelta() value must be a timedelta or float') from error
+
+    if value < 0 and not with_prefix:
+        raise ValueError('format_timedelta() negative timedelta requires with_prefix=True')
+    negative = value < 0
+    value = (datetime.min + timedelta(seconds=abs(value))).time().isoformat()
+
+    if with_prefix:
+        prefix = '+' if not negative else '-'
+        return f'{prefix}{value}'
+    return value
 
 
 class DateTimeEncoder(json.JSONEncoder):
@@ -21,13 +50,13 @@ class DateTimeEncoder(json.JSONEncoder):
         Encode datetime, date and time as UTC
         """
         if isinstance(obj, datetime):
-            obj = obj.astimezone(pytz.UTC)
+            obj = obj.astimezone(timezone.utc)
 
         if isinstance(obj, (datetime, date, time)):
             return obj.isoformat()
 
         if isinstance(obj, timedelta):
-            return (datetime.min + obj).time().isoformat()
+            return format_timedelta(obj, with_prefix=False)
 
         return super().default(obj)
 

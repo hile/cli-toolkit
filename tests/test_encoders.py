@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 import pytz
 import pytest
 
-from cli_toolkit.encoders import DateTimeEncoder, yaml_dump
+from cli_toolkit.encoders import DateTimeEncoder, format_timedelta, yaml_dump
 
 TEST_DATE = datetime(
     year=2020, month=1, day=2, hour=1, minute=2, second=3,
@@ -28,6 +28,17 @@ b:
   - 3
 """
 
+TIMEDELTA_VALID = (
+    {
+        'values': ['0', 0, 0.0, timedelta(seconds=0)],
+        'output': '+00:00:00',
+    },
+)
+TIMEDELTA_INVALID = (
+    None,
+    [],
+    'invalid'
+)
 
 
 def test_encoders_error():
@@ -37,6 +48,38 @@ def test_encoders_error():
     testdata = {'string': b'string value'}
     with pytest.raises(TypeError):
         json.dumps(testdata, cls=DateTimeEncoder)
+
+
+def test_format_timedelta_valid():
+    """
+    Test format_timedelta with various valid values
+    """
+    for testcase in TIMEDELTA_VALID:
+        for value in testcase['values']:
+            prefixed = testcase['output']
+            noprefix = testcase['output'].lstrip('+-')
+            assert format_timedelta(value) == prefixed
+            assert format_timedelta(value, with_prefix=False) == noprefix
+
+
+def test_format_timedelta_negative():
+    """
+    Test parsing negative time delta values
+    """
+    testcase = timedelta(seconds=-3623)
+    expected = '-01:00:23'
+    with pytest.raises(ValueError):
+        format_timedelta(testcase, with_prefix=False)
+    assert format_timedelta(testcase) == expected
+
+
+def test_format_timedelta_errors():
+    """
+    Test format_timedelta with various invalid values
+    """
+    for testcase in TIMEDELTA_VALID:
+        with pytest.raises(ValueError):
+            format_timedelta(testcase)
 
 
 # pylint: disable=unused-argument
