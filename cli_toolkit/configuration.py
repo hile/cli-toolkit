@@ -99,7 +99,7 @@ class ConfigurationItemContainer(Base):
 
         if isinstance(value, (list, tuple)):
             item = self.__list_loader__(attr, value, parent=self)  # pylint: disable=not-callable
-            setattr(self, item.setting, item)
+            setattr(self, item.__setting__, item)
             return
 
         if value is not None:
@@ -135,33 +135,31 @@ class ConfigurationList(ConfigurationItemContainer):
     """
     def __init__(self, setting, value, parent=None):
         super().__init__(parent=parent)
-        self.setting = setting
-        self.value = self.__load__(value)
+        self.__setting__ = setting
+        self.__load__(value)
 
     def __repr__(self):
-        return self.value.__repr__()
+        return self.__values__.__repr__()
 
     def __getitem__(self, index):
-        return self.value[index]
+        return self.__values__[index]
 
     def __iter__(self):
-        return iter(self.value)
+        return iter(self.__values__)
 
     def __len__(self):
-        return len(self.value)
+        return len(self.__values__)
 
     def __load__(self, value):
         """
         Load list of values
         """
-        items = []
+        self.__values__ = []
         for item in value:
             if isinstance(item, dict):
-                item = self.__dict_loader__(value, parent=self)  # pylint: disable=not-callable
-                items.append(item)
-            else:
-                items.append(item)
-        return items
+                # pylint: disable=not-callable
+                item = self.__dict_loader__(item, parent=self)
+            self.__values__.append(item)
 
 
 class ConfigurationSection(ConfigurationItemContainer):
