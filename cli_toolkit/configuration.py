@@ -12,6 +12,7 @@ from pathlib import Path
 import yaml
 
 from .base import Base
+from .logger import DEFAULT_TARGET_NAME
 from .exceptions import ConfigurationError
 
 # Pattern to validate configuration keys
@@ -30,6 +31,10 @@ class ConfigurationItemContainer(Base):
     """Tuple of settings loaded as integers"""
     __path_settings__ = ()
     """Tuple of settings loaded as pathlib.Path"""
+
+    def __init__(self, parent=None, debug_enabled=False, silent=False, logger=DEFAULT_TARGET_NAME):
+        self.__attributes__ = []
+        super().__init__(parent, debug_enabled, silent, logger)
 
     @property
     def __config_root__(self):
@@ -95,11 +100,13 @@ class ConfigurationItemContainer(Base):
         if isinstance(value, dict):
             item = self.__dict_loader__(value, parent=self)  # pylint: disable=not-callable
             setattr(self, attr, item)
+            self.__attributes__.append(attr)
             return
 
         if isinstance(value, (list, tuple)):
             item = self.__list_loader__(attr, value, parent=self)  # pylint: disable=not-callable
             setattr(self, item.__setting__, item)
+            self.__attributes__.append(item.__setting__)
             return
 
         if value is not None:
@@ -127,6 +134,7 @@ class ConfigurationItemContainer(Base):
             raise ConfigurationError(f'Error formatting setting {attr}: {error}') from error
 
         setattr(self, attr, value)
+        self.__attributes__.append(attr)
 
 
 class ConfigurationList(ConfigurationItemContainer):
@@ -226,6 +234,7 @@ class ConfigurationSection(ConfigurationItemContainer):
             if name is None:
                 raise ConfigurationError(f'Subsection class defines no name: {loader}')
             setattr(self, name, subsection)
+            self.__attributes__.append(name)
 
     def __attribute_from_key__(self, key):
         """

@@ -31,8 +31,7 @@ class Base(metaclass=Meta):
     Also includes self.logger instance of cli_toolkit.logger.Logger with
     specified logger group name
     """
-    def __init__(self, parent=None, debug_enabled=False, silent=False,
-                 logger=DEFAULT_TARGET_NAME):
+    def __init__(self, parent=None, debug_enabled=False, silent=False, logger=DEFAULT_TARGET_NAME):
         if parent is not None and not isinstance(parent, Base):
             raise TypeError('parent must be instance of cli_toolkit.base.Base')
         self.__parent__ = parent
