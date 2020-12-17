@@ -91,6 +91,19 @@ class ConfigurationItemContainer(Base):
         if not RE_CONFIGURATIION_KEY.match(attr):
             raise ConfigurationError(f'Invalid attribute name: {attr}')
 
+    def as_dict(self):
+        """
+        Return VS code configuration section as dictionary
+        """
+        data = {}
+        for attribute in self.__attributes__:
+            item = getattr(self, attribute)
+            if hasattr(item, 'as_dict'):
+                data[attribute] = item.as_dict()
+            else:
+                data[attribute] = item
+        return data
+
     def set(self, attr, value):
         """
         Load item with correct class
@@ -381,6 +394,15 @@ class ConfigurationSection(ConfigurationItemContainer):
                 self.__load_section__(attr, value)
             else:
                 self.set(key, value)
+
+    def as_dict(self):
+        """
+        Return configuration section as dictionary
+        """
+        data = super().as_dict()
+        for subsection in self.__subsections__:
+            data[subsection.__name__] = subsection.as_dict()
+        return data
 
     def set(self, attr, value):
         """

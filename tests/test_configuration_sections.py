@@ -409,6 +409,9 @@ def test_configuration_section_nested_loader_unknown():
     loader = configuration.__get_section_loader__(NestedConfigurationSection.__name__)
     assert loader == NestedConfigurationSection
 
+    dict_output = configuration.as_dict()
+    assert isinstance(dict_output, dict)
+
 
 def test_configuration_section_nested_classes():
     """
@@ -498,6 +501,9 @@ def test_configuration_section_load_dictionary():
     configuration.__load_dictionary__(data)
     assert configuration.foo.bar == 'test'
     assert configuration.bar.baz.zyxxy == 'item'
+
+    dict_output = configuration.as_dict()
+    assert isinstance(dict_output, dict)
 
 
 def test_configuration_section_set():
