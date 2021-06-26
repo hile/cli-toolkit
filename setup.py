@@ -8,7 +8,7 @@ setup(
     description='Classes to implement CLI commands in python',
     author='Ilkka Tuohela',
     author_email='hile@iki.fi',
-    url='https://git.tuohela.net/python/cli-toolkit',
+    url='https://github.com/hile/cli-toolkit',
     version=__version__,
     license='PSF',
     python_requires='>3.6.0',
