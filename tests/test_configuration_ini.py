@@ -20,9 +20,9 @@ from .test_configuration_sections import (
 
 # Ini supports only sections
 TEST_DEFAULT_DATA = dict(
-    (key, TEST_DEFAULT_DATA[key])
-    for key in TEST_DEFAULT_DATA
-    if isinstance(TEST_DEFAULT_DATA[key], dict)
+    (key, item)
+    for key, item in TEST_DEFAULT_DATA.items()
+    if isinstance(item, dict)
 )
 
 TEST_EMPTY = DATA_DIRECTORY.joinpath('configuration/test_empty.ini')
@@ -69,7 +69,7 @@ def test_configuration_ini_load_inaccessible(tmpdir, mock_path_not_file):
     Test loading default ini class with inaccessible file
     """
     path = Path(tmpdir).joinpath('test.ini')
-    with open(path, 'w') as filedescriptor:
+    with path.open('w', encoding='utf-8') as filedescriptor:
         filedescriptor.write('[defaults]\ntest = value\n')
     with pytest.raises(ConfigurationError):
         IniConfiguration(path)
@@ -81,7 +81,7 @@ def test_configuration_ini_load_permission_denied(tmpdir, mock_permission_denied
     Test loading default ini class with no permissions to file
     """
     path = Path(tmpdir).joinpath('test.ini')
-    with open(path, 'w') as filedescriptor:
+    with path.open('w', encoding='utf-8') as filedescriptor:
         filedescriptor.write('[defaults]\ntest = value\n')
     with pytest.raises(ConfigurationError):
         IniConfiguration(path)

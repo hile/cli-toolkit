@@ -23,7 +23,7 @@ class BaseScriptTask:
         self.parent = parent
         self.messages = []
         self.errors = []
-        parent.add_async_task_callback(self.run, **kwargs)
+        parent.add_async_task(self.run, **kwargs)
 
     def error(self, *args):
         """

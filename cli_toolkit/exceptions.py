@@ -9,18 +9,6 @@ class ConfigurationError(Exception):
     """
 
 
-class FileParserError(Exception):
-    """
-    Exceptions raised while parsing text files
-    """
-
-
-class LoggerError(Exception):
-    """
-    Exceptions raised by logging configuration
-    """
-
-
 class ScriptError(Exception):
     """
     Errors raise during script processing

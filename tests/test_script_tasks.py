@@ -6,24 +6,10 @@ import sys
 
 import pytest
 
+from sys_toolkit.tests.mock import MockCalledMethod
+
 from cli_toolkit.script import Script
 from cli_toolkit.task import Task, CommandLineTask
-
-
-# pylint: disable=too-few-public-methods
-class MockCalledMethod:
-    """
-    Mock a called method
-    """
-    def __init__(self):
-        self.call_count = 0
-        self.args = None
-        self.kwargs = None
-
-    def __call__(self, *args, **kwargs):
-        self.call_count += 1
-        self.args = args
-        self.kwargs = kwargs
 
 
 # pylint: disable=too-few-public-methods
@@ -32,7 +18,6 @@ class MockSigInt(MockCalledMethod):
     Mock SIGINT handler
     """
     def __call__(self, *args, **kwargs):
-        print('MOCK SIGINT', *args, **kwargs)
         super().__call__(*args, **kwargs)
         sys.exit(1)
 

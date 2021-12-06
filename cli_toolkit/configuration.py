@@ -11,8 +11,9 @@ from pathlib import Path
 
 import yaml
 
+from sys_toolkit.logger import DEFAULT_TARGET_NAME
+
 from .base import Base
-from .logger import DEFAULT_TARGET_NAME
 from .exceptions import ConfigurationError
 
 # Pattern to validate configuration keys
@@ -110,6 +111,11 @@ class ConfigurationItemContainer(Base):
         """
         self.__validate_attribute__(attr)
 
+        section = getattr(self, attr, None)
+        if section is not None and callable(getattr(section, 'set', None)):
+            section.set(attr, value)
+            return
+
         if isinstance(value, dict):
             item = self.__dict_loader__(value, parent=self)  # pylint: disable=not-callable
             setattr(self, attr, item)
@@ -154,10 +160,10 @@ class ConfigurationList(ConfigurationItemContainer):
     """
     List of settings in configuration section
     """
-    def __init__(self, setting, value, parent=None):
+    def __init__(self, setting=None, data=None, parent=None):
         super().__init__(parent=parent)
         self.__setting__ = setting
-        self.__load__(value)
+        self.__load__(data)
 
     def __repr__(self):
         return self.__values__.__repr__()
@@ -176,11 +182,15 @@ class ConfigurationList(ConfigurationItemContainer):
         Load list of values
         """
         self.__values__ = []
-        for item in value:
-            if isinstance(item, dict):
-                # pylint: disable=not-callable
-                item = self.__dict_loader__(item, parent=self)
-            self.__values__.append(item)
+        if value:
+            for item in value:
+                if isinstance(item, dict):
+                    # pylint: disable=not-callable
+                    item = self.__dict_loader__(item, parent=self)
+                self.__values__.append(item)
+
+    def set(self, attr, value):
+        self.__load__(value)
 
 
 class ConfigurationSection(ConfigurationItemContainer):
@@ -523,6 +533,8 @@ class JsonConfiguration(ConfigurationFile):
 
     You can pass arguments to json.loads with loader_args
     """
+    encoding = 'utf-8'
+
     def __init__(self, path=None, parent=None, debug_enabled=False, silent=False, **loader_args):
         self.__loader_args__ = loader_args
         super().__init__(path, parent=parent, debug_enabled=debug_enabled, silent=silent)
@@ -534,16 +546,18 @@ class JsonConfiguration(ConfigurationFile):
         path = self.__check_file_access__(path)
         try:
             self.parse_data(
-                json.loads(path.open('r').read(), **self.__loader_args__)
+                json.loads(path.open('r', encoding=self.encoding).read(), **self.__loader_args__)
             )
         except Exception as error:
-            raise ConfigurationError(f'Error loading {path}: {error}')
+            raise ConfigurationError(f'Error loading {path}: {error}') from error
 
 
 class YamlConfiguration(ConfigurationFile):
     """
     Configuration parser for yaml configuration files
     """
+    encoding = 'utf-8'
+
     def load(self, path):
         """
         Load specified YAML configuration file
@@ -552,7 +566,7 @@ class YamlConfiguration(ConfigurationFile):
 
         try:
             self.parse_data(
-                yaml.safe_load(path.open('r'))
+                yaml.safe_load(path.open('r', encoding='utf-8'))
             )
         except Exception as error:
-            raise ConfigurationError(f'Error loading {path}: {error}')
+            raise ConfigurationError(f'Error loading {path}: {error}') from error

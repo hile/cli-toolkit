@@ -73,7 +73,7 @@ def test_configuration_yml_load_inaccessible(tmpdir, mock_path_not_file):
     Test loading default YAML class with inaccessible file
     """
     path = Path(tmpdir).joinpath('test.yml')
-    with open(path, 'w') as filedescriptor:
+    with path.open('w', encoding='utf-8') as filedescriptor:
         filedescriptor.write('---\n')
 
     with pytest.raises(ConfigurationError):
@@ -86,7 +86,7 @@ def test_configuration_yml_load_permission_denied(tmpdir, mock_permission_denied
     Test loading default YAML class with no permissions to file
     """
     path = Path(tmpdir).joinpath('test.yml')
-    with open(path, 'w') as filedescriptor:
+    with path.open('w', encoding='utf-8') as filedescriptor:
         filedescriptor.write('---\n')
 
     with pytest.raises(ConfigurationError):

@@ -60,7 +60,10 @@ def test_create_subcommands_script():
     Test creating script with subcommands from class attribute
     """
     script = SubcommandsScript()
-    command = script.__subcommands__['empty']
+    name = 'empty'
+    print(script.__subcommands__)
+    assert name in script.__subcommands__
+    command = script.__subcommands__[name]
     assert isinstance(command, EmptyCommand)
 
 

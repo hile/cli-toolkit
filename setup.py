@@ -15,8 +15,7 @@ setup(
     packages=find_packages(),
     install_requires=(
         'setproctitle>=1.1.10',
-        'PyYAML>=5.1.2',
-        'pytz',
+        'sys-toolkit==1.1.0',
     ),
     entry_points={
         'pytest11': [

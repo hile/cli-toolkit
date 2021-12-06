@@ -15,7 +15,7 @@ class ThirdLevelCommand(Command):
     parsed = False
     result = False
 
-    def parse_args(self, args):
+    def parse_args(self, args=None, namespace=None):
         """
         Parse subcommand args
         """

@@ -16,11 +16,22 @@ from pathlib import Path
 
 from setproctitle import setproctitle  # pylint: disable=no-name-in-module
 
+from sys_toolkit.logger import Logger
+
 from .base import NestedCliCommand
-from .logger import Logger
 
 
-class Script(NestedCliCommand):
+class ScriptMetaClass(type):
+    """
+    Run script initialize() method after creating object
+    """
+    def __call__(cls, *args, **kwargs):
+        obj = type.__call__(cls, *args, **kwargs)
+        obj.initialize()
+        return obj
+
+
+class Script(NestedCliCommand, metaclass=ScriptMetaClass):
     """
     CLI script command main class
     """

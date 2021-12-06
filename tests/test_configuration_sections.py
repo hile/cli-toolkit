@@ -331,6 +331,7 @@ def test_configuration_section_load_section_nomatch_path():
     # pylint: disable=no-member
     assert configuration.test.other.bar.test_key == '123'
 
+    # pylint: disable=no-member
     configuration.__load_section__(
         'test',
         {'test_key': 'test value'},
@@ -481,9 +482,11 @@ def test_configuration_section_paths():
     assert field == 'value'
 
     configuration.__load_section__('sub', {'test': 'value'}, path='outer')
+    # pylint: disable=no-member
     assert configuration.sub.outer.test == 'value'
 
     configuration.__load_section__('sub', 'value', path='inner.test')
+    # pylint: disable=no-member
     assert configuration.sub.inner.test == 'value'
 
 
@@ -499,7 +502,9 @@ def test_configuration_section_load_dictionary():
         }
     }
     configuration.__load_dictionary__(data)
+    # pylint: disable=no-member
     assert configuration.foo.bar == 'test'
+    # pylint: disable=no-member
     assert configuration.bar.baz.zyxxy == 'item'
 
     dict_output = configuration.as_dict()
@@ -512,8 +517,10 @@ def test_configuration_section_set():
     """
     configuration = ConfigurationSection()
     configuration.set('test', {'key': 'value'})
+    # pylint: disable=no-member
     assert configuration.test.key == 'value'
     configuration.set('foo.bar', 'baz')
+    # pylint: disable=no-member
     assert configuration.foo.bar == 'baz'
 
 
@@ -527,15 +534,20 @@ def test_configuration_section_set_formatters():
     configuration.__path_settings__ = ('root',)
 
     configuration.set('test', {'a': 'a value'})
+    # pylint: disable=no-member
     assert isinstance(configuration.test, ConfigurationSection)
+    # pylint: disable=no-member
     assert configuration.test.a == 'a value'
 
     configuration.set('integrity', '123')
+    # pylint: disable=no-member
     assert configuration.integrity == 123
     configuration.set('floating', '123.25')
+    # pylint: disable=no-member
     assert configuration.floating == 123.25
 
     configuration.set('root', '/tmp')
+    # pylint: disable=no-member
     assert isinstance(configuration.root, Path)
 
 

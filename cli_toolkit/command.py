@@ -62,7 +62,7 @@ class Command(NestedCliCommand, argparse.ArgumentParser):
         """
         self.__parent__.message(*args)
 
-    def parse_args(self, args):  # pylint: disable=arguments-differ
+    def parse_args(self, args=None, namespace=None):
         """
         Parse command arguments
 
@@ -71,14 +71,14 @@ class Command(NestedCliCommand, argparse.ArgumentParser):
         """
         return args
 
-    def parse_known_args(self, args, other_args):  # pylint: disable=arguments-differ
+    def parse_known_args(self, args=None, namespace=None):
         """
         Parse command arguments with unknown arguments
 
         Command arguments are received from parent and not parsed
         here with ArgumentParser default parser.
         """
-        return args, other_args
+        return args, namespace
 
     def run(self, args):
         """

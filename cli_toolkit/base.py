@@ -7,23 +7,14 @@ import asyncio
 import os
 import sys
 
+from sys_toolkit.base import LoggingBaseClass
+
 from .exceptions import ScriptError
-from .logger import Logger, DEFAULT_TARGET_NAME
 
 DEFAULT_SUBPARSER_HELP = ''
 
 
-class Meta(type):
-    """
-    Metaclass to run initialize() method after init
-    """
-    def __call__(cls, *args, **kwargs):
-        instance = super().__call__(*args, **kwargs)
-        instance.initialize(*args, **kwargs)
-        return instance
-
-
-class Base(metaclass=Meta):
+class Base(LoggingBaseClass):
     """
     Base class with message / error handling and runner for registered
     async tasks
@@ -31,15 +22,11 @@ class Base(metaclass=Meta):
     Also includes self.logger instance of cli_toolkit.logger.Logger with
     specified logger group name
     """
-    def __init__(self, parent=None, debug_enabled=False, silent=False, logger=DEFAULT_TARGET_NAME):
+    def __init__(self, parent=None, debug_enabled=False, silent=False, logger=None):
+        super().__init__(debug_enabled, silent, logger)
         if parent is not None and not isinstance(parent, Base):
             raise TypeError('parent must be instance of cli_toolkit.base.Base')
         self.__parent__ = parent
-        self.__logger__ = Logger(logger)
-
-        self.__debug_enabled__ = debug_enabled
-        self.__silent__ = silent
-
         self.__async_task_callbacks__ = []
         self.__async_tasks__ = []
 
@@ -50,7 +37,7 @@ class Base(metaclass=Meta):
         """
         if self.__parent__ is not None:
             return self.__parent__.__is_debug_enabled__ or self.__debug_enabled__
-        return self.__debug_enabled__
+        return super().__is_debug_enabled__
 
     @property
     def __is_silent__(self):
@@ -59,45 +46,17 @@ class Base(metaclass=Meta):
         """
         if self.__parent__ is not None:
             return self.__parent__.__is_silent__ or self.__silent__
-        return self.__silent__
+        return super().__is_silent__
 
-    @staticmethod
-    def __parse_string_args__(*args):
+    def add_async_task(self, callback, **kwargs):
         """
-        Parse list of values as stripped string concatenated by space
-        """
-        args = [str(arg).rstrip() for arg in args]
-        return ' '.join(args)
-
-    def debug(self, *args):
-        """
-        Send debug message to stderr if debug mode is enabled
-        """
-        if self.__is_debug_enabled__:
-            self.error(*args)
-
-    def error(self, *args):
-        """
-        Send error message to stderr
-        """
-        sys.stderr.write(f'{self.__parse_string_args__(*args)}\n')
-
-    def message(self, *args):
-        """
-        Show message to stdout unless silent flag is set
-        """
-        if not self.__is_silent__:
-            sys.stdout.write(f'{self.__parse_string_args__(*args)}\n')
-
-    def add_async_task_callback(self, callback, **kwargs):
-        """
-        Add async task to be run
+        Register a new async task to be run when run_async_tasks is triggered
         """
         self.__async_task_callbacks__.append((callback, kwargs))
 
-    async def run_async_tasks(self):
+    async def create_async_tasks(self):
         """
-        Run asynchronous tasks added by self.add_task
+        Create asynchronous tasks added by self.add_async_task_callback
         """
         self.__async_tasks__ = []
 
@@ -112,13 +71,11 @@ class Base(metaclass=Meta):
 
         return asyncio.gather(*self.__async_tasks__)
 
-    # pylint: disable=unused-argument
-    def initialize(self, *args, **kwargs):
+    def run_async_tasks(self):
         """
-        Method run after initializing object
-
-        Implement in child class if needed
+        Create and run async tasks registered with add_async_task
         """
+        return asyncio.run(self.create_async_tasks())
 
 
 class NestedCliCommand(Base):
@@ -283,7 +240,7 @@ class NestedCliCommand(Base):
         Run subcommand with arguments
         """
         if self.__async_task_callbacks__:
-            asyncio.run(self.run_async_tasks())
+            self.run_async_tasks()
             self.exit(0)
 
         if self.command_dest not in args:

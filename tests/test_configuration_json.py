@@ -73,7 +73,7 @@ def test_configuration_ini_load_inaccessible(tmpdir, mock_path_not_file):
     Test loading default JSON class with inaccessible file
     """
     path = Path(tmpdir).joinpath('test.json')
-    with open(path, 'w') as filedescriptor:
+    with path.open('w', encoding='utf-8') as filedescriptor:
         filedescriptor.write('{ "test": "value"}\n')
     with pytest.raises(ConfigurationError):
         JsonConfiguration(path)
@@ -85,7 +85,7 @@ def test_configuration_ini_load_permission_denied(tmpdir, mock_permission_denied
     Test loading default JSON class with no permissions to file
     """
     path = Path(tmpdir).joinpath('test.json')
-    with open(path, 'w') as filedescriptor:
+    with path.open('w', encoding='utf-8') as filedescriptor:
         filedescriptor.write('{ "test": "value"}\n')
     with pytest.raises(ConfigurationError):
         JsonConfiguration(path)
