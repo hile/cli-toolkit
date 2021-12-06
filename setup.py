@@ -14,8 +14,8 @@ setup(
     python_requires='>3.6.0',
     packages=find_packages(),
     install_requires=(
-        'setproctitle>=1.1.10',
-        'sys-toolkit==1.1.0',
+        'setproctitle>=1.2.2',
+        'sys-toolkit==1.1.1',
     ),
     entry_points={
         'pytest11': [
