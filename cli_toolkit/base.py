@@ -169,6 +169,8 @@ class NestedCliCommand(Base):
         """
         Clear stty settings by running 'stty sane' in terminal
         """
+        if sys.platform == 'win32':
+            return
         try:
             os.system('stty sane')
         except Exception:
