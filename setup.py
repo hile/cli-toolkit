@@ -15,7 +15,7 @@ setup(
     packages=find_packages(),
     install_requires=(
         'setproctitle>=1.2.2',
-        'sys-toolkit==1.1.1',
+        'sys-toolkit==1.1.2',
     ),
     entry_points={
         'pytest11': [
