@@ -337,7 +337,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
 
 [[package]]
 name = "sys-toolkit"
-version = "1.2.0"
+version = "1.2.1"
 description = "Classes for operating system utilities"
 category = "main"
 optional = false
@@ -437,7 +437,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6"
-content-hash = "0a34aec822bbcfa7bf459639548b1d477b02cc70edb095f1e5bd71b6369af1b2"
+content-hash = "3679af794935133aa53d9f13a4b41901f0924fe8a4500baeefc71969f16a47e9"
 
 [metadata.files]
 astroid = [
@@ -686,8 +686,8 @@ six = [
     {file = "six-1.16.0.tar.gz", hash = "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926"},
 ]
 sys-toolkit = [
-    {file = "sys-toolkit-1.2.0.tar.gz", hash = "sha256:0fd7f64b178239c3385d2f194d6d3ddd6d6ad392923d7ba77ef02cf818054ee6"},
-    {file = "sys_toolkit-1.2.0-py3-none-any.whl", hash = "sha256:6db39ae3d1f0431d219db1d676453970cef12db280cdee194d3cc62f1a665138"},
+    {file = "sys-toolkit-1.2.1.tar.gz", hash = "sha256:b721976b12186f35b03420d58758bac7b5e1db2d21eb8295fabf1d23064227f7"},
+    {file = "sys_toolkit-1.2.1-py3-none-any.whl", hash = "sha256:0e97377a006fddc1f4b0f73b4d49c961ddb646c716d700abb4ac081c0a832077"},
 ]
 toml = [
     {file = "toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b"},
