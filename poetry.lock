@@ -160,6 +160,14 @@ docs = ["sphinx", "jaraco.packaging (>=8.2)", "rst.linker (>=1.9)"]
 testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-cov", "pytest-enabler (>=1.0.1)", "pytest-black (>=0.3.7)", "pytest-mypy"]
 
 [[package]]
+name = "inflection"
+version = "0.5.1"
+description = "A port of Ruby on Rails inflector to Python"
+category = "main"
+optional = false
+python-versions = ">=3.5"
+
+[[package]]
 name = "iniconfig"
 version = "1.1.1"
 description = "iniconfig: brain-dead simple config-ini parsing"
@@ -337,13 +345,14 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
 
 [[package]]
 name = "sys-toolkit"
-version = "1.2.1"
+version = "2.0.0"
 description = "Classes for operating system utilities"
 category = "main"
 optional = false
 python-versions = ">=3.6,<4.0"
 
 [package.dependencies]
+inflection = ">=0.5,<0.6"
 PyYAML = ">=6.0,<7.0"
 
 [[package]]
@@ -437,7 +446,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6"
-content-hash = "3679af794935133aa53d9f13a4b41901f0924fe8a4500baeefc71969f16a47e9"
+content-hash = "7b1b9a6d3528146ecece6675c131b591a313ce2da872ed2242965a9ccd7b6f9b"
 
 [metadata.files]
 astroid = [
@@ -535,6 +544,10 @@ importlib-metadata = [
 importlib-resources = [
     {file = "importlib_resources-5.4.0-py3-none-any.whl", hash = "sha256:33a95faed5fc19b4bc16b29a6eeae248a3fe69dd55d4d229d2b480e23eeaad45"},
     {file = "importlib_resources-5.4.0.tar.gz", hash = "sha256:d756e2f85dd4de2ba89be0b21dba2a3bbec2e871a42a3a16719258a11f87506b"},
+]
+inflection = [
+    {file = "inflection-0.5.1-py2.py3-none-any.whl", hash = "sha256:f38b2b640938a4f35ade69ac3d053042959b62a0f1076a5bbaa1b9526605a8a2"},
+    {file = "inflection-0.5.1.tar.gz", hash = "sha256:1a29730d366e996aaacffb2f1f1cb9593dc38e2ddd30c91250c6dde09ea9b417"},
 ]
 iniconfig = [
     {file = "iniconfig-1.1.1-py2.py3-none-any.whl", hash = "sha256:011e24c64b7f47f6ebd835bb12a743f2fbe9a26d4cecaa7f53bc4f35ee9da8b3"},
@@ -686,8 +699,8 @@ six = [
     {file = "six-1.16.0.tar.gz", hash = "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926"},
 ]
 sys-toolkit = [
-    {file = "sys-toolkit-1.2.1.tar.gz", hash = "sha256:b721976b12186f35b03420d58758bac7b5e1db2d21eb8295fabf1d23064227f7"},
-    {file = "sys_toolkit-1.2.1-py3-none-any.whl", hash = "sha256:0e97377a006fddc1f4b0f73b4d49c961ddb646c716d700abb4ac081c0a832077"},
+    {file = "sys-toolkit-2.0.0.tar.gz", hash = "sha256:29d82792744700eb290e7bb803847011b34f4e956729769f4172c698f68bba43"},
+    {file = "sys_toolkit-2.0.0-py3-none-any.whl", hash = "sha256:8b387f2da73d65f017a64e7e85667d05dec68956b691b68043b9aec5264fc7b6"},
 ]
 toml = [
     {file = "toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b"},

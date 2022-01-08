@@ -3,6 +3,8 @@ import sys
 
 import pytest
 
+from sys_toolkit.tests.mock import MockCalledMethod
+
 from cli_toolkit.script import Script
 from cli_toolkit.command import Command
 
@@ -49,7 +51,7 @@ class FirstLevelCommand(Command):
     )
 
 
-def test_create_nested_subcommands(monkeypatch):
+def test_nested_subcommands_create(monkeypatch):
     """
     Test adding command without name
     """
@@ -74,3 +76,39 @@ def test_create_nested_subcommands(monkeypatch):
     assert exit_status.value.code == 0
     assert third.parsed is True
     assert third.result is True
+
+
+def test_nested_subcommand_bsd_stty_flush(monkeypatch):
+    """
+    Test using nested_subcommand  with stty flush after command finishes
+    """
+    script = Script()
+    command = FirstLevelCommand(script)
+    script.add_subcommand(command)
+
+    mock_system_command = MockCalledMethod()
+    monkeypatch.setattr('os.system', mock_system_command)
+    monkeypatch.setattr('sys.platform', 'bsd')
+    argv = ['test', 'firstlevel', 'secondlevel', 'thirdlevel']
+    monkeypatch.setattr(sys, 'argv', argv)
+    with pytest.raises(SystemExit) as exit_status:
+        script.run()
+    assert mock_system_command.call_count == 1
+
+
+def test_nested_subcommand_win32_no_stty_flush(monkeypatch):
+    """
+    Test using nested_subcommand wihtout stty flush after command finishes
+    """
+    script = Script()
+    command = FirstLevelCommand(script)
+    script.add_subcommand(command)
+
+    mock_system_command = MockCalledMethod()
+    monkeypatch.setattr('os.system', mock_system_command)
+    monkeypatch.setattr('sys.platform', 'win32')
+    argv = ['test', 'firstlevel', 'secondlevel', 'thirdlevel']
+    monkeypatch.setattr(sys, 'argv', argv)
+    with pytest.raises(SystemExit) as exit_status:
+        script.run()
+    assert mock_system_command.call_count == 0
