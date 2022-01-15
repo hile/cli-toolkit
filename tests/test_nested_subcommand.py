@@ -91,7 +91,7 @@ def test_nested_subcommand_bsd_stty_flush(monkeypatch):
     monkeypatch.setattr('sys.platform', 'bsd')
     argv = ['test', 'firstlevel', 'secondlevel', 'thirdlevel']
     monkeypatch.setattr(sys, 'argv', argv)
-    with pytest.raises(SystemExit) as exit_status:
+    with pytest.raises(SystemExit):
         script.run()
     assert mock_system_command.call_count == 1
 
@@ -109,6 +109,6 @@ def test_nested_subcommand_win32_no_stty_flush(monkeypatch):
     monkeypatch.setattr('sys.platform', 'win32')
     argv = ['test', 'firstlevel', 'secondlevel', 'thirdlevel']
     monkeypatch.setattr(sys, 'argv', argv)
-    with pytest.raises(SystemExit) as exit_status:
+    with pytest.raises(SystemExit):
         script.run()
     assert mock_system_command.call_count == 0
