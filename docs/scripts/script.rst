@@ -4,11 +4,6 @@ Script class
 
 Each CLI script starts with instance of :obj:`cli_toolkit.script.Script`.
 
-Script name in process listings
--------------------------------
-
-Script class uses setproctitle to set argv[0] as process name.
-
 Script interrupt handling
 -------------------------
 

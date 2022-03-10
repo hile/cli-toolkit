@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cli-toolkit"
-version = "2.0.2"
+version = "2.1.0"
 description = "Classes to implement CLI commands in python"
 authors = ["Ilkka Tuohela <hile@iki.fi>"]
 license = "PSF"
@@ -17,7 +17,6 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.9"
-setproctitle = "^1.2"
 sys-toolkit = "^2.0.0"
 
 [tool.poetry.dev-dependencies]

@@ -14,8 +14,6 @@ import sys
 
 from pathlib import Path
 
-from setproctitle import setproctitle  # pylint: disable=no-name-in-module
-
 from sys_toolkit.logger import Logger
 
 from .base import NestedCliCommand
@@ -42,8 +40,6 @@ class Script(NestedCliCommand, metaclass=ScriptMetaClass):
         self.name = Path(sys.argv[0]).name
         self.logger = Logger(self.name)
         super().__init__()
-
-        setproctitle(f'{self.name} {" ".join(sys.argv[1:])}')
 
         if formatter_class is None:
             formatter_class = self.default_formatter_class
