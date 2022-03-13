@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cli-toolkit"
-version = "2.1.0"
+version = "2.1.1"
 description = "Classes to implement CLI commands in python"
 authors = ["Ilkka Tuohela <hile@iki.fi>"]
 license = "PSF"
@@ -17,23 +17,22 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.9"
-sys-toolkit = "^2.0.0"
+sys-toolkit = "^2.1"
 
 [tool.poetry.dev-dependencies]
-coverage = "6.1.2"
-flake8 = "4.0.1"
-flake8-bugbear = "21.9.2"
-flake8-quotes = "3.3.1"
-pycodestyle = "2.8.0"
-pyflakes = "2.4.0"
-pylint = "2.11.1"
-pytest = "6.2.5"
-tox = "3.24.4"
+coverage = "^6.1"
+flake8 = "^4.0"
+flake8-bugbear = "^21.9"
+flake8-quotes = "^3.3"
+pycodestyle = "^2.8"
+pyflakes = "^2.4"
+pylint = "^2.11"
+pytest = "^6.2"
+tox = "^3"
 
 [tool.poetry.plugins.pytest11]
 cli_toolkit_fixtures = 'cli_toolkit.fixtures'
 
 [build-system]
-# requires = ["poetry-core>=1.0.0"]
-requires = ["poetry-core @ git+https://github.com/python-poetry/poetry-core.git@master"]
+requires = ["poetry-core>=1.0.8"]
 build-backend = "poetry.core.masonry.api"
