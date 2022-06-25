@@ -18,6 +18,7 @@ classifiers = [
 [tool.poetry.dependencies]
 python = "^3.9"
 sys-toolkit = "^2.1"
+pylint = "<2.14"
 
 [tool.poetry.dev-dependencies]
 coverage = "^6.1"
