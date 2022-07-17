@@ -46,9 +46,9 @@ class Script(NestedCliCommand, metaclass=ScriptMetaClass):
 
         self.__parser__ = argparse.ArgumentParser(
             prog=self.name,
-            usage=usage,
-            description=description,
-            epilog=epilog,
+            usage=usage if usage is not None else self.usage,
+            description=description if description is not None else self.description,
+            epilog=epilog if epilog is not None else self.epilog,
             formatter_class=formatter_class,
             add_help=True,
             conflict_handler='resolve',
