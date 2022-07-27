@@ -1,3 +1,6 @@
+![Unit Tests](https://github.com/hile/cli-toolkit/actions/workflows/unittest.yml/badge.svg)
+![Style Checks](https://github.com/hile/cli-toolkit/actions/workflows/lint.yml/badge.svg)
+
 # CLI toolkit for shell command utilities
 
 This module contains modules to implement CLI scripts by wrapping
