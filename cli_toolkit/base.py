@@ -158,10 +158,11 @@ class NestedCliCommand(Base):
         """
         Register nested subcommands
         """
+        if self.__subcommands__:
+            return
         for loader in self.subcommands:
             command = loader(self)
-            if command.name not in self.__subcommands__:
-                self.add_subcommand(command)
+            self.add_subcommand(command)
             command.__register_subcommands__()
 
     @staticmethod

@@ -61,10 +61,13 @@ def test_create_subcommands_script():
     """
     script = SubcommandsScript()
     name = 'empty'
-    print(script.__subcommands__)
     assert name in script.__subcommands__
     command = script.__subcommands__[name]
     assert isinstance(command, EmptyCommand)
+    assert script.__subcommands__[name].__hash__() == command.__hash__()
+
+    script.__register_subcommands__()
+    assert script.__subcommands__[name].__hash__() == command.__hash__()
 
 
 def test_create_subcommand_no_name():
