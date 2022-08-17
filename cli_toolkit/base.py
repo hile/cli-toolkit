@@ -229,7 +229,6 @@ class NestedCliCommand(Base):
         """
         self.__parser__.add_argument(*args, **kwargs)
 
-    # pylint: disable=no-self-use
     def register_parser_arguments(self, parser):
         """
         Register parser arguments

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cli-toolkit"
-version = "2.1.5"
+version = "2.2.1"
 description = "Classes to implement CLI commands in python"
 authors = ["Ilkka Tuohela <hile@iki.fi>"]
 license = "PSF"
@@ -17,18 +17,16 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.9"
-sys-toolkit = "^2.1"
-pylint = "<2.14"
+sys-toolkit = "^2.2.1"
 
 [tool.poetry.dev-dependencies]
 coverage = "^6.1"
-flake8 = "^4.0"
-flake8-bugbear = "^21.9"
+flake8 = "^5.0"
 flake8-quotes = "^3.3"
 pycodestyle = "^2.8"
 pyflakes = "^2.4"
-pylint = "^2.11"
-pytest = "^6.2"
+pylint = "^2.14"
+pytest = "^7.1"
 tox = "^3"
 
 [tool.poetry.plugins.pytest11]

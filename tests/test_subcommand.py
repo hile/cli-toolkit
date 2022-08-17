@@ -37,15 +37,14 @@ class SubcommandsScript(Script):
     )
 
 
-def initialize_empty_command(help=None, formatter_class=None):  # pylint: disable=redefined-builtin
-
+# pylint: disable=redefined-builtin
+def initialize_empty_command(help_message=None, formatter_class=None):
     """
     Initialize empty command with script for tests
     """
     script = Script()
     command = EmptyCommand(script)
-    # pylint: disable=redefined-builtin
-    script.add_subcommand(command, help=help, formatter_class=formatter_class)
+    script.add_subcommand(command, help=help_message, formatter_class=formatter_class)
 
     if formatter_class is None:
         formatter_class = command.default_formatter_class
@@ -96,24 +95,24 @@ def test_create_empty_command_with_help():
     """
     Test creating script with empty command
     """
-    help = 'Helpful message'  # pylint: disable=redefined-builtin
-    script, command = initialize_empty_command(help=help)
+    help_message = 'Helpful message'
+    script, command = initialize_empty_command(help_message=help_message)
     with pytest.raises(SystemExit) as exit_code:
         script.run()
     assert exit_code.type == SystemExit
     assert exit_code.value.code == 1
     assert command.usage == ''
-    assert script.__subcommand_parser__.help == help
+    assert script.__subcommand_parser__.help == help_message
 
 
 def test_create_empty_command_with_formatter_class():
     """
     Test creating script with empty command and custom formatter class
     """
-    help = 'Helpful message'  # pylint: disable=redefined-builtin
+    help_message = 'Helpful message'
     formatter_class = argparse.RawDescriptionHelpFormatter
     script, command = initialize_empty_command(
-        help=help,
+        help_message=help_message,
         formatter_class=formatter_class
     )
     with pytest.raises(SystemExit) as exit_code:
@@ -121,7 +120,7 @@ def test_create_empty_command_with_formatter_class():
     assert exit_code.type == SystemExit
     assert exit_code.value.code == 1
     assert command.usage == ''
-    assert script.__subcommand_parser__.help == help
+    assert script.__subcommand_parser__.help == help_message
 
 
 def test_command_with_other_args():
