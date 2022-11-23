@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cli-toolkit"
-version = "2.2.4"
+version = "2.2.5"
 description = "Classes to implement CLI commands in python"
 authors = ["Ilkka Tuohela <hile@iki.fi>"]
 readme = "README.md"
