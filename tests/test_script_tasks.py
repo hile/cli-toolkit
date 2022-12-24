@@ -110,9 +110,8 @@ def test_script_tasks_cli_multiple_tasks(monkeypatch):
     Test running multiple commands from script CLI task
     """
     script = Script()
-    CommandLineTask(script, ('ls', '/usr'))
-    CommandLineTask(script, ('ls', '/usr'))
-    CommandLineTask(script, ('find', '/tmp'))
+    CommandLineTask(script, ('ls', '/'))
+    CommandLineTask(script, ('find', '.'))
     mock_method = MockCalledMethod()
     monkeypatch.setattr(script, 'message', mock_method)
     with pytest.raises(SystemExit) as exit_status:
