@@ -173,7 +173,8 @@ class NestedCliCommand(Base):
         if sys.platform == 'win32':
             return
         try:
-            os.system('stty sane')
+            if sys.stdin.isatty():
+                os.system('stty sane')
         except Exception:
             pass
 

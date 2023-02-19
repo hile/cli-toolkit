@@ -3,7 +3,7 @@ import sys
 
 import pytest
 
-from sys_toolkit.tests.mock import MockCalledMethod
+from sys_toolkit.tests.mock import MockCalledMethod, MockReturnFalse, MockReturnTrue
 
 from cli_toolkit.script import Script
 from cli_toolkit.command import Command
@@ -59,11 +59,8 @@ def test_nested_subcommands_create(monkeypatch):
     command = FirstLevelCommand(script)
     script.add_subcommand(command)
 
-    print('script', script.__subcommands__)
     first = script.__subcommands__['firstlevel']
-    print('first level', first.__subcommands__)
     second = first.__subcommands__['secondlevel']
-    print('seccnd level', second.__subcommands__)
     third = second.__subcommands__['thirdlevel']
 
     assert third.parsed is False
@@ -78,7 +75,7 @@ def test_nested_subcommands_create(monkeypatch):
     assert third.result is True
 
 
-def test_nested_subcommand_bsd_stty_flush(monkeypatch):
+def test_nested_subcommand_stty_flush_with_tty(monkeypatch):
     """
     Test using nested_subcommand  with stty flush after command finishes
     """
@@ -87,13 +84,35 @@ def test_nested_subcommand_bsd_stty_flush(monkeypatch):
     script.add_subcommand(command)
 
     mock_system_command = MockCalledMethod()
+    mock_return_true = MockReturnTrue()
     monkeypatch.setattr('os.system', mock_system_command)
     monkeypatch.setattr('sys.platform', 'bsd')
+    monkeypatch.setattr('sys.stdin.isatty', mock_return_true)
     argv = ['test', 'firstlevel', 'secondlevel', 'thirdlevel']
     monkeypatch.setattr(sys, 'argv', argv)
     with pytest.raises(SystemExit):
         script.run()
     assert mock_system_command.call_count == 1
+
+
+def test_nested_subcommand_stty_flush_no_tty(monkeypatch):
+    """
+    Test using nested_subcommand  with stty flush after command finishes
+    """
+    script = Script()
+    command = FirstLevelCommand(script)
+    script.add_subcommand(command)
+
+    mock_system_command = MockCalledMethod()
+    mock_return_false = MockReturnFalse()
+    monkeypatch.setattr('os.system', mock_system_command)
+    monkeypatch.setattr('sys.platform', 'bsd')
+    monkeypatch.setattr('sys.stdin.isatty', mock_return_false)
+    argv = ['test', 'firstlevel', 'secondlevel', 'thirdlevel']
+    monkeypatch.setattr(sys, 'argv', argv)
+    with pytest.raises(SystemExit):
+        script.run()
+    assert mock_system_command.call_count == 0
 
 
 def test_nested_subcommand_win32_no_stty_flush(monkeypatch):

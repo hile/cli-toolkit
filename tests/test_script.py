@@ -7,6 +7,8 @@ from unittest.mock import patch
 
 import pytest
 
+from sys_toolkit.tests.mock import MockReturnTrue
+
 from cli_toolkit.script import Script
 from cli_toolkit.tests.script import (
     validate_script_attributes,
@@ -90,7 +92,9 @@ def test_script_reset_error(monkeypatch):
     """
     script = Script()
     mock_method = MockOsError()
+    mock_return_true = MockReturnTrue()
     monkeypatch.setattr('os.system', mock_method)
+    monkeypatch.setattr('sys.stdin.isatty', mock_return_true)
     script.reset_stty()
     assert mock_method.call_count > 0
 
