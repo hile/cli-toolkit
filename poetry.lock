@@ -541,14 +541,14 @@ files = [
 
 [[package]]
 name = "sys-toolkit"
-version = "2.4.6"
+version = "2.4.7"
 description = "Classes for operating system utilities"
 category = "main"
 optional = false
 python-versions = ">=3.9,<4.0"
 files = [
-    {file = "sys_toolkit-2.4.6-py3-none-any.whl", hash = "sha256:b43c080cc503efeccfb4edaad3d4ed82e9a54402609cb75bcc33f3a065bd275e"},
-    {file = "sys_toolkit-2.4.6.tar.gz", hash = "sha256:5a1e8545dc1659a6b08ea631134d2683c77b292a2d7dd6d35d36bc32527a8f86"},
+    {file = "sys_toolkit-2.4.7-py3-none-any.whl", hash = "sha256:5b8c3d06c7b56d7391d628fd21d38983b045858a12b6bed89a99d8800bc0cc54"},
+    {file = "sys_toolkit-2.4.7.tar.gz", hash = "sha256:62a53c88066737c0cfe6993138bc7d4f063819305bd46810b982dcf71ffa406a"},
 ]
 
 [package.dependencies]
