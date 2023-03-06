@@ -1,8 +1,17 @@
-
+#
+# Copyright (C) 2020-2023 by Ilkka Tuohela <hile@iki.fi>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+"""
+Unit tests for cli_toolkit.script module
+"""
 import argparse
 import os
 import signal
 import sys
+
+from typing import Any, Dict, List
 from unittest.mock import patch
 
 import pytest
@@ -32,7 +41,7 @@ class MockOsError:
     def __init__(self):
         self.call_count = 0
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args: List[Any], **kwargs: Dict[Any, Any]) -> None:
         """
         raise OSError
         """
@@ -40,7 +49,7 @@ class MockOsError:
         raise OSError(f'Mocked OSError {args} {kwargs}')
 
 
-def test_script_create_empty():
+def test_script_create_empty() -> None:
     """
     Test creating script with no specific options
     """
@@ -50,7 +59,7 @@ def test_script_create_empty():
     )
 
 
-def test_script_create_empty_with_formatter_class():
+def test_script_create_empty_with_formatter_class() -> None:
     """
     Test creating script with custom formatter class
     """
@@ -62,7 +71,7 @@ def test_script_create_empty_with_formatter_class():
     )
 
 
-def test_script_create_empty_custom_args():
+def test_script_create_empty_custom_args() -> None:
     """
     Test creating script with no specific options
     """
@@ -76,7 +85,7 @@ def test_script_create_empty_custom_args():
     )
 
 
-def test_script_no_subcommand_run():
+def test_script_no_subcommand_run() -> None:
     """
     Ensure empty script run() exits with code 1
     """
@@ -86,7 +95,7 @@ def test_script_no_subcommand_run():
     validate_script_error_exit_code(exception)
 
 
-def test_script_reset_error(monkeypatch):
+def test_script_reset_error(monkeypatch) -> None:
     """
     Test script running with error running stty reset
     """
@@ -99,7 +108,7 @@ def test_script_reset_error(monkeypatch):
     assert mock_method.call_count > 0
 
 
-def test_script_sigint_handler():
+def test_script_sigint_handler() -> None:
     """
     Ensure empty script run() calls sigint handler with SIGINT
     """
@@ -111,7 +120,7 @@ def test_script_sigint_handler():
     validate_script_error_exit_code(exception)
 
 
-def test_script_with_invalid_args(monkeypatch):
+def test_script_with_invalid_args(monkeypatch) -> None:
     """
     Test running script with invalid arguments
     """
@@ -125,7 +134,7 @@ def test_script_with_invalid_args(monkeypatch):
         )
 
 
-def test_script_with_debug_enabled(monkeypatch):
+def test_script_with_debug_enabled(monkeypatch) -> None:
     """
     Test setting --debug flag
     """
@@ -138,7 +147,7 @@ def test_script_with_debug_enabled(monkeypatch):
         )
 
 
-def test_script_with_quiet_enabled(monkeypatch):
+def test_script_with_quiet_enabled(monkeypatch) -> None:
     """
     Test setting --quiet flag
     """
@@ -151,7 +160,7 @@ def test_script_with_quiet_enabled(monkeypatch):
         )
 
 
-def test_exit_no_message(capsys):
+def test_exit_no_message(capsys) -> None:
     """
     Test exit without message
     """
@@ -163,7 +172,7 @@ def test_exit_no_message(capsys):
     assert captured.err == ''
 
 
-def test_exit_with_invalid_value(capsys):
+def test_exit_with_invalid_value(capsys) -> None:
     """
     Test exit by sending invalid exit codes
     """
@@ -183,7 +192,7 @@ def test_exit_with_invalid_value(capsys):
     assert message in captured.err.splitlines()
 
 
-def test_exit_with_bool_false(capsys):
+def test_exit_with_bool_false(capsys) -> None:
     """
     Test exit by sending True to error code
     """
@@ -197,7 +206,7 @@ def test_exit_with_bool_false(capsys):
     assert message in captured.err.splitlines()
 
 
-def test_exit_with_bool_true(capsys):
+def test_exit_with_bool_true(capsys) -> None:
     """
     Test exit by sending True to error code
     """
@@ -211,7 +220,7 @@ def test_exit_with_bool_true(capsys):
     assert message in captured.err.splitlines()
 
 
-def test_debug_message_disabled(capsys):
+def test_debug_message_disabled(capsys) -> None:
     """
     Test sending debug message with debug disabled
     """
@@ -223,7 +232,7 @@ def test_debug_message_disabled(capsys):
     assert captured.err == ''
 
 
-def test_debug_message_enabled(capsys):
+def test_debug_message_enabled(capsys) -> None:
     """
     Test sending debug message with debug enabled
     """
@@ -235,7 +244,7 @@ def test_debug_message_enabled(capsys):
     assert message in captured.err.splitlines()
 
 
-def test_error_message_silent(capsys):
+def test_error_message_silent(capsys) -> None:
     """
     Test sending error message with silent flag
     """
@@ -247,7 +256,7 @@ def test_error_message_silent(capsys):
     assert message in captured.err.splitlines()
 
 
-def test_error_message(capsys):
+def test_error_message(capsys) -> None:
     """
     Test sending error message
     """
@@ -258,7 +267,7 @@ def test_error_message(capsys):
     assert message in captured.err.splitlines()
 
 
-def test_message_silent(capsys):
+def test_message_silent(capsys) -> None:
     """
     Test sending message with silent flag
     """

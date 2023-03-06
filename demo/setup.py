@@ -1,4 +1,8 @@
-
+#
+# Copyright (C) 2020-2023 by Ilkka Tuohela <hile@iki.fi>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
 from setuptools import setup, find_packages
 from cli_toolkit_demo import __version__
 

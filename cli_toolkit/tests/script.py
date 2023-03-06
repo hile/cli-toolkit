@@ -1,20 +1,25 @@
+#
+# Copyright (C) 2020-2023 by Ilkka Tuohela <hile@iki.fi>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
 """
 Common unit test validators for cli_toolkit.script.Script objects
 """
-
 import argparse
 import sys
+
+from typing import Any, Optional
 
 import pytest
 
 from ..script import Script
 
 
-def validate_script_attributes(script,
-                               expected_args,
-                               formatter_class=None,
-                               debug_enabled=False
-                               ):
+def validate_script_attributes(script: Script,
+                               expected_args: dict,
+                               formatter_class: Optional[argparse.HelpFormatter] = None,
+                               debug_enabled: bool = False):
     """
     Validate common attributes of Script instance
     """
@@ -32,7 +37,9 @@ def validate_script_attributes(script,
     assert vars(args) == expected_args
 
 
-def validate_script_error_exit_code(exception, exit_code=1):
+def validate_script_error_exit_code(
+        exception: BaseException,
+        exit_code: int = 1) -> BaseException:
     """
     Assert running script raises specified exit code
     """
@@ -41,7 +48,11 @@ def validate_script_error_exit_code(exception, exit_code=1):
     return exception
 
 
-def validate_script_run_exception_with_args(script, context, args, exit_code=2):
+def validate_script_run_exception_with_args(
+        script: Script,
+        context: Any,
+        args: argparse.Namespace,
+        exit_code: int = 2) -> None:
     """
     Validate exception raised by running script with specified invalid
     arguments
@@ -52,7 +63,10 @@ def validate_script_run_exception_with_args(script, context, args, exit_code=2):
     assert exception.value.code == exit_code
 
 
-def validate_script_debug_flag_enabled(script, context, expected_args):
+def validate_script_debug_flag_enabled(
+        script: Script,
+        context: Any,
+        expected_args: dict) -> None:
     """
     Validate debug flag is set by script correctly
     """
@@ -65,7 +79,10 @@ def validate_script_debug_flag_enabled(script, context, expected_args):
     assert vars(args) == expected_args
 
 
-def validate_script_quiet_flag_enabled(script, context, expected_args):
+def validate_script_quiet_flag_enabled(
+        script: Script,
+        context: Any,
+        expected_args: dict) -> None:
     """
     Validate debug flag is set by script correctly
     """

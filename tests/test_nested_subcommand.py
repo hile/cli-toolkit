@@ -1,5 +1,14 @@
-
+#
+# Copyright (C) 2020-2023 by Ilkka Tuohela <hile@iki.fi>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+"""
+Unit tests for cli_toolkit.command nested subcommands
+"""
 import sys
+
+from argparse import Namespace
 
 import pytest
 
@@ -17,14 +26,14 @@ class ThirdLevelCommand(Command):
     parsed = False
     result = False
 
-    def parse_args(self, args=None, namespace=None):
+    def parse_args(self, args: Namespace = None, namespace: Namespace = None) -> Namespace:
         """
         Parse subcommand args
         """
         self.parsed = True
         return args
 
-    def run(self, args):
+    def run(self, args: Namespace) -> None:
         """
         Run subcommand
         """
@@ -51,7 +60,7 @@ class FirstLevelCommand(Command):
     )
 
 
-def test_nested_subcommands_create(monkeypatch):
+def test_nested_subcommands_create(monkeypatch) -> None:
     """
     Test adding command without name
     """
@@ -75,7 +84,7 @@ def test_nested_subcommands_create(monkeypatch):
     assert third.result is True
 
 
-def test_nested_subcommand_stty_flush_with_tty(monkeypatch):
+def test_nested_subcommand_stty_flush_with_tty(monkeypatch) -> None:
     """
     Test using nested_subcommand  with stty flush after command finishes
     """
@@ -95,7 +104,7 @@ def test_nested_subcommand_stty_flush_with_tty(monkeypatch):
     assert mock_system_command.call_count == 1
 
 
-def test_nested_subcommand_stty_flush_no_tty(monkeypatch):
+def test_nested_subcommand_stty_flush_no_tty(monkeypatch) -> None:
     """
     Test using nested_subcommand  with stty flush after command finishes
     """
@@ -115,7 +124,7 @@ def test_nested_subcommand_stty_flush_no_tty(monkeypatch):
     assert mock_system_command.call_count == 0
 
 
-def test_nested_subcommand_win32_no_stty_flush(monkeypatch):
+def test_nested_subcommand_win32_no_stty_flush(monkeypatch) -> None:
     """
     Test using nested_subcommand wihtout stty flush after command finishes
     """

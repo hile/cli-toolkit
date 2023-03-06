@@ -1,4 +1,11 @@
-
+#
+# Copyright (C) 2020-2023 by Ilkka Tuohela <hile@iki.fi>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+"""
+Unit tests for subcommands in cli_toolkit.command module
+"""
 import argparse
 import sys
 
@@ -24,7 +31,7 @@ class ResultsCommand(Command):
     usage = 'Test empty with result'
     result = False
 
-    def run(self, args):
+    def run(self, args: argparse.Namespace):
         self.result = True
 
 
@@ -38,7 +45,7 @@ class SubcommandsScript(Script):
 
 
 # pylint: disable=redefined-builtin
-def initialize_empty_command(help_message=None, formatter_class=None):
+def initialize_empty_command(help_message=None, formatter_class=None) -> None:
     """
     Initialize empty command with script for tests
     """
@@ -54,7 +61,7 @@ def initialize_empty_command(help_message=None, formatter_class=None):
     return script, command
 
 
-def test_create_subcommands_script():
+def test_create_subcommands_script() -> None:
     """
     Test creating script with subcommands from class attribute
     """
@@ -69,7 +76,7 @@ def test_create_subcommands_script():
     assert script.__subcommands__[name].__hash__() == command.__hash__()
 
 
-def test_create_subcommand_no_name():
+def test_create_subcommand_no_name() -> None:
     """
     Test adding command without name
     """
@@ -78,7 +85,7 @@ def test_create_subcommand_no_name():
         script.add_subcommand(Command(script))
 
 
-def test_create_empty_command():
+def test_create_empty_command() -> None:
     """
     Test creating script with empty command
     """
@@ -91,7 +98,7 @@ def test_create_empty_command():
     assert script.__subcommand_parser__.help == DEFAULT_SUBPARSER_HELP
 
 
-def test_create_empty_command_with_help():
+def test_create_empty_command_with_help() -> None:
     """
     Test creating script with empty command
     """
@@ -105,7 +112,7 @@ def test_create_empty_command_with_help():
     assert script.__subcommand_parser__.help == help_message
 
 
-def test_create_empty_command_with_formatter_class():
+def test_create_empty_command_with_formatter_class() -> None:
     """
     Test creating script with empty command and custom formatter class
     """
@@ -123,7 +130,7 @@ def test_create_empty_command_with_formatter_class():
     assert script.__subcommand_parser__.help == help_message
 
 
-def test_command_with_other_args():
+def test_command_with_other_args() -> None:
     """
     Test parsing script with other args
     """
@@ -132,7 +139,7 @@ def test_command_with_other_args():
     command.parse_known_args(args, other_args)
 
 
-def test_create_command_custom_fields():
+def test_create_command_custom_fields() -> None:
     """
     Test adding command without name
     """
@@ -152,7 +159,7 @@ def test_create_command_custom_fields():
     assert epilog == command.epilog
 
 
-def test_reregister_command():
+def test_reregister_command() -> None:
     """
     Test registrering same command twice
     """
@@ -163,7 +170,7 @@ def test_reregister_command():
     assert exit_code.value.code == 1
 
 
-def test_debug_flag_default():
+def test_debug_flag_default() -> None:
     """
     Test script subcommand has debugging disabled by default
     """
@@ -173,7 +180,7 @@ def test_debug_flag_default():
         assert command.__is_debug_enabled__ is False
 
 
-def test_debug_flag_inheritance():
+def test_debug_flag_inheritance() -> None:
     """
     Test script subcommand debug flag follows script
     """
@@ -184,7 +191,7 @@ def test_debug_flag_inheritance():
         assert command.__is_debug_enabled__ is True
 
 
-def test_debug_message_debug(capsys):
+def test_debug_message_debug(capsys) -> None:
     """
     Test sending debug message with debug disabled
     """
@@ -197,7 +204,7 @@ def test_debug_message_debug(capsys):
     assert captured.err == ''
 
 
-def test_debug_message_enabled(capsys):
+def test_debug_message_enabled(capsys) -> None:
     """
     Test sending debug message with debug disabled
     """
@@ -209,7 +216,7 @@ def test_debug_message_enabled(capsys):
     assert message in captured.err.splitlines()
 
 
-def test_silent_flag_default():
+def test_silent_flag_default() -> None:
     """
     Test script subcommand has silent disabled by default
     """
@@ -219,7 +226,7 @@ def test_silent_flag_default():
         assert command.__is_silent__ is False
 
 
-def test_silent_flag_inheritance():
+def test_silent_flag_inheritance() -> None:
     """
     Test script subcommand has silent disabled by default
     """
@@ -230,7 +237,7 @@ def test_silent_flag_inheritance():
         assert command.__is_silent__ is True
 
 
-def test_command_exit(capsys):
+def test_command_exit(capsys) -> None:
     """
     Test calling exit from command
     """
@@ -244,7 +251,7 @@ def test_command_exit(capsys):
     assert message in captured.err.splitlines()
 
 
-def test_command_error(capsys):
+def test_command_error(capsys) -> None:
     """
     Test calling error from command
     """
@@ -255,7 +262,7 @@ def test_command_error(capsys):
     assert message in captured.err.splitlines()
 
 
-def test_command_message(capsys):
+def test_command_message(capsys) -> None:
     """
     Test calling message from command
     """
@@ -266,7 +273,7 @@ def test_command_message(capsys):
     assert message in captured.out.splitlines()
 
 
-def test_command_message_silent(capsys):
+def test_command_message_silent(capsys) -> None:
     """
     Test calling mesasge from command with silent flag set
     """
@@ -278,7 +285,7 @@ def test_command_message_silent(capsys):
     assert captured.out == ''
 
 
-def test_command_with_result(monkeypatch):
+def test_command_with_result(monkeypatch) -> None:
     """
     Test result command run is called
     """
@@ -296,7 +303,7 @@ def test_command_with_result(monkeypatch):
         assert command.result is True
 
 
-def test_command_with_invalid_args(monkeypatch):
+def test_command_with_invalid_args(monkeypatch) -> None:
     """
     Test result command run is called
     """

@@ -1,13 +1,23 @@
-
+#
+# Copyright (C) 2020-2023 by Ilkka Tuohela <hile@iki.fi>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+"""
+Unit tests for cli_toolkit.task module
+"""
 import asyncio
 import os
 import signal
 import sys
 
+from typing import Any, Dict, List, Optional
+
 import pytest
 
 from sys_toolkit.tests.mock import MockCalledMethod
 
+from cli_toolkit.base import NestedCliCommand
 from cli_toolkit.script import Script
 from cli_toolkit.task import Task, CommandLineTask
 
@@ -17,7 +27,7 @@ class MockSigInt(MockCalledMethod):
     """
     Mock SIGINT handler
     """
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args: List[Any], **kwargs: Dict[Any, Any]) -> None:
         super().__call__(*args, **kwargs)
         sys.exit(1)
 
@@ -26,11 +36,13 @@ class MessageTask(Task):
     """
     Test task waiting for some time
     """
-    def __init__(self, parent, **kwargs):
+    def __init__(self,
+                 parent: Optional[NestedCliCommand] = None,
+                 **kwargs: Dict[Any, Any]) -> None:
         super().__init__(parent, **kwargs)
         self.message = None
 
-    async def run(self, **kwargs):
+    async def run(self, **kwargs: Dict[Any, Any]) -> None:
         """
         Run test task
         """
@@ -44,7 +56,7 @@ class FailTask(Task):
     """
     Failing test task
     """
-    async def run(self, **kwargs):
+    async def run(self, **kwargs: Dict[Any, Any]) -> None:
         """
         Run test task
         """
@@ -55,7 +67,7 @@ class SleepyTask(Task):
     """
     Run task that waits and is cancelled
     """
-    async def run(self, **kwargs):
+    async def run(self, **kwargs: Dict[Any, Any]) -> None:
         """
         Run test task
         """
@@ -67,7 +79,7 @@ class CancelTask(Task):
     """
     Run task that sends SIGINT to script and is cancelled
     """
-    async def run(self, **kwargs):
+    async def run(self, **kwargs: Dict[Any, Any]) -> None:
         """
         Run test task
         """
@@ -77,7 +89,7 @@ class CancelTask(Task):
         os.kill(pid, signal.SIGINT)
 
 
-def test_script_tasks_cli_ls(monkeypatch):
+def test_script_tasks_cli_ls(monkeypatch) -> None:
     """
     Test running trivial command from script CLI task
     """
@@ -91,7 +103,7 @@ def test_script_tasks_cli_ls(monkeypatch):
     assert mock_method.call_count > 1
 
 
-def test_script_tasks_cli_ls_errors(monkeypatch):
+def test_script_tasks_cli_ls_errors(monkeypatch) -> None:
     """
     Test running trivial command with error from script CLI task
     """
@@ -105,7 +117,7 @@ def test_script_tasks_cli_ls_errors(monkeypatch):
     assert mock_method.call_count == 1
 
 
-def test_script_tasks_cli_multiple_tasks(monkeypatch):
+def test_script_tasks_cli_multiple_tasks(monkeypatch) -> None:
     """
     Test running multiple commands from script CLI task
     """
@@ -120,7 +132,7 @@ def test_script_tasks_cli_multiple_tasks(monkeypatch):
     assert mock_method.call_count > 1
 
 
-def test_script_tasks_with_failing_task():
+def test_script_tasks_with_failing_task() -> None:
     """
     Test script with a task that raises ValueError exception
     """
@@ -130,7 +142,7 @@ def test_script_tasks_with_failing_task():
         script.run()
 
 
-def test_script_tasks_with_wait_task_cancelled(monkeypatch):
+def test_script_tasks_with_wait_task_cancelled(monkeypatch) -> None:
     """
     Test script with a task that raises ValueError exception
     """
@@ -148,7 +160,7 @@ def test_script_tasks_with_wait_task_cancelled(monkeypatch):
     assert mock_sigint.call_count == 1
 
 
-def test_script_tasks_with_multiple_tasks():
+def test_script_tasks_with_multiple_tasks() -> None:
     """
     Test script with two instances calling same Task object
     """

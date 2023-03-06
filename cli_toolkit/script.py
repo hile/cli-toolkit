@@ -1,3 +1,8 @@
+#
+# Copyright (C) 2020-2023 by Ilkka Tuohela <hile@iki.fi>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
 """
 CLI script base class
 
@@ -7,12 +12,13 @@ with python.
 The Script class is usually used with cli_toolkit.command.Command to create
 CLI scripts with subcommands.
 """
-
 import argparse
 import signal
 import sys
 
 from pathlib import Path
+from types import FrameType
+from typing import Any, Dict, List, Optional, Tuple
 
 from sys_toolkit.logger import Logger
 
@@ -23,7 +29,7 @@ class ScriptMetaClass(type):
     """
     Run script initialize() method after creating object
     """
-    def __call__(cls, *args, **kwargs):
+    def __call__(cls, *args: List[Any], **kwargs: Dict[Any, Any]) -> None:
         obj = type.__call__(cls, *args, **kwargs)
         obj.initialize()
         return obj
@@ -33,9 +39,17 @@ class Script(NestedCliCommand, metaclass=ScriptMetaClass):
     """
     CLI script command main class
     """
-    subcommands = ()
+    name: str
+    logger: Logger
+    __parser__: argparse.ArgumentParser
 
-    def __init__(self, usage=None, description=None, epilog=None, formatter_class=None):
+    subcommands: Tuple[NestedCliCommand] = ()
+
+    def __init__(self,
+                 usage: str = None,
+                 description: str = None,
+                 epilog: str = None,
+                 formatter_class: argparse.HelpFormatter = None) -> None:
         signal.signal(signal.SIGINT, self.SIGINT)
         self.name = Path(sys.argv[0]).name
         self.logger = Logger(self.name)
@@ -58,7 +72,7 @@ class Script(NestedCliCommand, metaclass=ScriptMetaClass):
         self.__parser__.add_argument('--quiet', action='store_true', help='Silent printed messages')
 
     # pylint: disable=unused-argument
-    def initialize(self, *args, **kwargs):
+    def initialize(self, *args: List[Any], **kwargs: Dict[Any, Any]) -> None:
         """
         Add subcommands defined in self.subcommands after creating object instance
         """
@@ -67,14 +81,14 @@ class Script(NestedCliCommand, metaclass=ScriptMetaClass):
 
     # pylint: disable=invalid-name
     # pylint: disable=unused-argument
-    def SIGINT(self, signum, frame):
+    def SIGINT(self, signum: int, frame: Optional[FrameType]) -> None:
         """
         Parse SIGINT signal by quitting the program cleanly with exit code 1
         """
         self.reset_stty()
         self.exit(1)
 
-    def __process_args__(self, args):
+    def __process_args__(self, args: argparse.Namespace) -> argparse.Namespace:
         """
         Process args and run subcommand if detected
         """
@@ -86,13 +100,13 @@ class Script(NestedCliCommand, metaclass=ScriptMetaClass):
 
         return args
 
-    def parse_args(self):
+    def parse_args(self) -> argparse.Namespace:
         """
         Call parse_args for parser and check for default logging flags
         """
         return self.__process_args__(self.__parser__.parse_args())
 
-    def parse_known_args(self):
+    def parse_known_args(self) -> Tuple[argparse.Namespace, argparse.Namespace]:
         """
         Call parse_args for parser and check for default logging flags
         """
@@ -100,7 +114,7 @@ class Script(NestedCliCommand, metaclass=ScriptMetaClass):
         args = self.__process_args__(args)
         return args, other_args
 
-    def run(self):
+    def run(self) -> None:
         """
         Run script, parsing arguments and running subcommands
 

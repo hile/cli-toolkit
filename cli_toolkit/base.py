@@ -1,15 +1,25 @@
+#
+# Copyright (C) 2020-2023 by Ilkka Tuohela <hile@iki.fi>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
 """
 Base classes for scripts and script subcommands
 """
-
 import argparse
 import asyncio
 import os
 import sys
 
+from typing import Any, Dict, Callable, List, Optional, TYPE_CHECKING
+
 from sys_toolkit.base import LoggingBaseClass
 
 from .exceptions import ScriptError
+
+if TYPE_CHECKING:
+    from logging import Logger
+    from .task import Task
 
 DEFAULT_SUBPARSER_HELP = ''
 
@@ -22,7 +32,15 @@ class Base(LoggingBaseClass):
     Also includes self.logger instance of cli_toolkit.logger.Logger with
     specified logger group name
     """
-    def __init__(self, parent=None, debug_enabled=False, silent=False, logger=None):
+    __parent__: 'Base'
+    __async_task_callbacks__: List[Callable]
+    __async_tasks__ = List['Task']
+
+    def __init__(self,
+                 parent: Optional['Base'] = None,
+                 debug_enabled: bool = False,
+                 silent: bool = False,
+                 logger: 'Logger' = None) -> None:
         super().__init__(debug_enabled, silent, logger)
         if parent is not None and not isinstance(parent, Base):
             raise TypeError('parent must be instance of cli_toolkit.base.Base')
@@ -31,7 +49,7 @@ class Base(LoggingBaseClass):
         self.__async_tasks__ = []
 
     @property
-    def __is_debug_enabled__(self):
+    def __is_debug_enabled__(self) -> bool:
         """
         Check if debugging is enabled in this class or parents
         """
@@ -40,7 +58,7 @@ class Base(LoggingBaseClass):
         return super().__is_debug_enabled__
 
     @property
-    def __is_silent__(self):
+    def __is_silent__(self) -> bool:
         """
         Check if silent mode is enabled in this class or parents
         """
@@ -48,13 +66,13 @@ class Base(LoggingBaseClass):
             return self.__parent__.__is_silent__ or self.__silent__
         return super().__is_silent__
 
-    def add_async_task(self, callback, **kwargs):
+    def add_async_task(self, callback: Callable, **kwargs: Dict[Any, Any]) -> None:
         """
         Register a new async task to be run when run_async_tasks is triggered
         """
         self.__async_task_callbacks__.append((callback, kwargs))
 
-    async def create_async_tasks(self):
+    async def create_async_tasks(self) -> None:
         """
         Create asynchronous tasks added by self.add_async_task_callback
         """
@@ -71,7 +89,7 @@ class Base(LoggingBaseClass):
 
         return asyncio.gather(*self.__async_tasks__)
 
-    def run_async_tasks(self):
+    def run_async_tasks(self) -> None:
         """
         Create and run async tasks registered with add_async_task
         """
@@ -82,28 +100,27 @@ class NestedCliCommand(Base):
     """
     Common base class for scripts and nested CLI commands
     """
-    name = None
+    name: Optional[str] = None
     """Name of script or command, used in CLI command arguments generation"""
-    usage = ''
+    usage: str = ''
     """Command usage string for --help in ArgumentParser"""
-    description = ''
+    description: str = ''
     """Command description, shown on top of --help output"""
-    epilog = ''
+    epilog: str = ''
     """Command epilog, shown on botton of --help output"""
-    default_formatter_class = argparse.RawTextHelpFormatter
+    default_formatter_class: argparse.HelpFormatter = argparse.RawTextHelpFormatter
     """Argument parser formatter class"""
-    no_subcommand_error = 'No command selected'
+    no_subcommand_error: str = 'No command selected'
     """Error message to show when no required subcommand is specified when running CLI"""
 
     subcommands = ()
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: Optional['NestedCliCommand'] = None) -> None:
         """
         Initialize command with link t parent
 
         Parent can be either Script or Command
         """
-
         if parent is not None and not isinstance(parent, NestedCliCommand):
             raise TypeError('parent must be instance of NestedCliCommand')
 
@@ -116,20 +133,20 @@ class NestedCliCommand(Base):
         if self.name is None:
             raise ScriptError(f'No name defined: {self.__class__}')
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Return name of script or command
         """
         return self.name if self.name is not None else ''
 
     @property
-    def command_dest(self):
+    def command_dest(self) -> str:
         """
         Return ArgumentParser 'dest' flag for command
         """
         return f'{self.name}_command'
 
-    def exit(self, value=0, message=None):
+    def exit(self, value: int = 0, message: Optional[str] = None) -> None:
         """
         Exit the script with given exit value
 
@@ -154,7 +171,7 @@ class NestedCliCommand(Base):
         self.reset_stty()
         sys.exit(value)
 
-    def __register_subcommands__(self):
+    def __register_subcommands__(self) -> None:
         """
         Register nested subcommands
         """
@@ -166,7 +183,7 @@ class NestedCliCommand(Base):
             command.__register_subcommands__()
 
     @staticmethod
-    def reset_stty():
+    def reset_stty() -> None:
         """
         Clear stty settings by running 'stty sane' in terminal
         """
@@ -179,7 +196,7 @@ class NestedCliCommand(Base):
             pass
 
     # pylint: disable=redefined-builtin
-    def add_subparsers(self, help=None):
+    def add_subparsers(self, help: Optional[str] = None) -> None:
         """
         Add subparsers linked to parent parser
         """
@@ -196,7 +213,11 @@ class NestedCliCommand(Base):
         self.__subcommands__ = {}
 
     # pylint: disable=redefined-builtin
-    def add_subcommand(self, command, help=None, formatter_class=None):
+    def add_subcommand(
+            self,
+            command: 'NestedCliCommand',
+            help: Optional[str] = None,
+            formatter_class: Optional[argparse.HelpFormatter] = None) -> None:
         """
         Add a subcommand parser linked to nested command
         """
@@ -224,13 +245,13 @@ class NestedCliCommand(Base):
         command.__register_subcommands__()
         return parser
 
-    def add_argument(self, *args, **kwargs):
+    def add_argument(self, *args: List[Any], **kwargs: Dict[Any, Any]) -> None:
         """
         Shortcut to add argument to main argumentparser instance
         """
         self.__parser__.add_argument(*args, **kwargs)
 
-    def register_parser_arguments(self, parser):
+    def register_parser_arguments(self, parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
         """
         Register parser arguments
 
@@ -238,7 +259,7 @@ class NestedCliCommand(Base):
         """
         return parser
 
-    def run_subcommand(self, args):
+    def run_subcommand(self, args: argparse.Namespace) -> None:
         """
         Run subcommand with arguments
         """
